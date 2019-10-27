@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <assert.h> // assert
 #include <time.h> //time
+#include <math.h>
 
 #define RANGE 100.0
 
@@ -210,7 +211,10 @@ int convex_hull_main( point *p, int n, point p1, point pn, line_segment *l, int 
         l[*num_l].from.y = p1.y;
         l[*num_l].to.x = pn.x;
         l[(*num_l)++].to.y = pn.y;
-        return 0;
+       
+	free(p);
+
+	return 0;
     }
 
     for(int i=0; i<n; i++){
