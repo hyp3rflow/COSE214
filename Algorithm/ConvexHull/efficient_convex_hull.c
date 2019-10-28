@@ -43,11 +43,14 @@ void separate_points( point *p, int n, point from, point to, point *s1, point *s
 
         float chksign = cur_x * a + b * cur_y - c;
 
-        if(chksign < 0.0){
+        if(from.x == p[i].x && from.y == p[i].y || to.x == p[i].x && to.y == p[i].y)
+            continue;
+
+        if(chksign < -0.00000001){
             s1[(*n1)++] = p[i];
         }
 
-        else if (chksign > 0.0) {
+        else if (chksign > 0.00000001) {
             s2[(*n2)++] = p[i];
         }
     }
@@ -136,6 +139,10 @@ int convex_hull( point *p, int n, int min_index, int max_index, line_segment *l)
     return num_l;
 }
 
+double radian(point p_from, point p_to, point p_target){
+    return atan((p_target.y - p_from.y) / (p_target.x - p_from.x)) - atan((p_to.y - p_from.y) / (p_to.x - p_from.x));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 int main( int argc, char **argv)
 {
@@ -201,25 +208,27 @@ int convex_hull_main( point *p, int n, point p1, point pn, line_segment *l, int 
     float c = pn.y * p1.x - pn.x * p1.y;
 
     int max_index = 0;
+    double max_radian = -1;
     float max = -1;
 
-    for(int i=0; i<n; i++){
-        float d = distance(a, b, c, p[i]);
-        if(d > max){
-            max = d;
-            max_index = i;
-        }
-    }
-
-    if(n == 0 || max <= 0.0){
+    if(n == 0){
         l[*num_l].from.x = p1.x;
         l[*num_l].from.y = p1.y;
         l[*num_l].to.x = pn.x;
         l[(*num_l)++].to.y = pn.y;
 
         free(p);
-
         return 0;
+    }
+
+    for(int i=0; i<n; i++){
+        float d = distance(a, b, c, p[i]);
+        if(d >= max){
+            if(d == max && max_radian > radian(p1, pn, p[i])) continue;
+            max = d;
+            max_index = i;
+            max_radian = radian(p1, pn, p[i]);
+        }
     }
 
     int n0 = 0, n1 = 0, n2 = 0;
