@@ -43,13 +43,11 @@ void separate_points( point *p, int n, point from, point to, point *s1, point *s
 
         float chksign = cur_x * a + b * cur_y - c;
 
-        if((cur_x == from.x && cur_y == from.y) || (cur_x == to.x && cur_y == to.y)) continue;
-
-        if(chksign < 0){
+        if(chksign < 0.0){
             s1[(*n1)++] = p[i];
         }
 
-        else if (chksign > 0) {
+        else if (chksign > 0.0) {
             s2[(*n2)++] = p[i];
         }
     }
@@ -203,19 +201,7 @@ int convex_hull_main( point *p, int n, point p1, point pn, line_segment *l, int 
     float c = pn.y * p1.x - pn.x * p1.y;
 
     int max_index = 0;
-    float max = 0;
-
-    if(n == 0){
-        int i = (*num_l);
-        l[*num_l].from.x = p1.x;
-        l[*num_l].from.y = p1.y;
-        l[*num_l].to.x = pn.x;
-        l[(*num_l)++].to.y = pn.y;
-
-	free(p);
-
-	return 0;
-    }
+    float max = -1;
 
     for(int i=0; i<n; i++){
         float d = distance(a, b, c, p[i]);
@@ -223,6 +209,17 @@ int convex_hull_main( point *p, int n, point p1, point pn, line_segment *l, int 
             max = d;
             max_index = i;
         }
+    }
+
+    if(n == 0 || max <= 0.0){
+        l[*num_l].from.x = p1.x;
+        l[*num_l].from.y = p1.y;
+        l[*num_l].to.x = pn.x;
+        l[(*num_l)++].to.y = pn.y;
+
+        free(p);
+
+        return 0;
     }
 
     int n0 = 0, n1 = 0, n2 = 0;
