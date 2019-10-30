@@ -114,10 +114,10 @@ int convex_hull( point *p, int n, int min_index, int max_index, line_segment *l)
     int num_l = 0;
     int n1 = 0, n2 = 0;
 
-    point *s1 = (point *)malloc(sizeof (point *) * n);
+    point *s1 = (point *)malloc(sizeof (point) * n);
     assert( s1 != NULL);
 
-    point *s2 = (point *)malloc(sizeof (point *) * n);
+    point *s2 = (point *)malloc(sizeof (point) * n);
     assert( s2 != NULL);
 
     // p[0] = min x point
@@ -163,11 +163,11 @@ int main( int argc, char **argv)
     }
 
     point *p;
-    p = (point *)malloc(sizeof (point *) * n);
+    p = (point *)malloc(sizeof (point) * n);
     assert( p != NULL);
 
     line_segment *l;
-    l = (line_segment *)malloc(sizeof (line_segment *) * n);
+    l = (line_segment *)malloc(sizeof (line_segment) * n);
     assert( l != NULL);
 
     fprintf( stderr, "Create %d points\n", n);
@@ -232,13 +232,13 @@ int convex_hull_main( point *p, int n, point p1, point pn, line_segment *l, int 
     }
 
     int n0 = 0, n1 = 0, n2 = 0;
-    point *s0 = (point *)malloc(sizeof(point *) * n);
-    point *s1 = (point *)malloc(sizeof(point *) * n);
-    point *s2 = (point *)malloc(sizeof(point *) * n);
+    point *s0 = (point *)malloc(sizeof(point) * n);
+    point *s1 = (point *)malloc(sizeof(point) * n);
+    point *s2 = (point *)malloc(sizeof(point) * n);
 
     separate_points(p, n, p1, p[max_index], s0, s1, &n0, &n1);
     free(s1);
-    s1 = (point *)malloc(sizeof(point *) * n); n1 = 0;
+    s1 = (point *)malloc(sizeof(point) * n); n1 = 0;
     separate_points(p, n, p[max_index], pn, s2, s1, &n2, &n1);
     free(s1);
 
