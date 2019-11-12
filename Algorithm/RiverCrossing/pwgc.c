@@ -9,7 +9,14 @@
 #define CABBAGE 0x01
 
 // 인접행렬로 표현된 graph를 화면에 출력
-void print_graph(int graph[][16], int num) { return; }
+void print_graph(int graph[][16], int num) {
+    for(int i=0; i<num; i++){
+        for(int j=0; j<num; j++){
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 // 주어진 상태 state의 마지막 4비트를 파일에 출력 (화면 출력은 stdout)
 void bit_print(FILE *fp, int state) {
