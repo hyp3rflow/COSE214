@@ -203,7 +203,7 @@ void dfs_main(int state, int goal_state, int level, int *visited) {
 		int (*fp[4])(int) = {changeP, changePC, changePG, changePW};
 		for(int i=0; i<4; i++){
 			int newState = fp[i](state);
-			if(!is_dead_end(newState) && !visited[newState] && is_possible_transition(state, newState)){
+			if(!is_dead_end(newState) && !visited[newState]){
 				visited[state] = newState;
 				dfs_main(newState, goal_state, level, visited);
 				visited[newState] = 0;
