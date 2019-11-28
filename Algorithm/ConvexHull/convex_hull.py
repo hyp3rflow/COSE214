@@ -8,7 +8,10 @@ import math
 
 
 def main():
-    max_number = int(input())
+    print("\n///////////////////////////////////////////////////////")
+    print("Welcome to Academic English II convex-hull presentation")
+    print("///////////////////////////////////////////////////////\n")
+    max_number = int(input("Please input the number of point : "))
 
     points = []
 
