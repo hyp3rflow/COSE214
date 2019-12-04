@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 	int encoded_bytes = encoding(codes, infp, outfp);
 
 	// 허프만 코드 메모리 해제
-	// free_huffman_code( codes);
+	free_huffman_code(codes);
 
 	fclose(infp);
 	fclose(outfp);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 	decoding(huffman_tree, infp, outfp);
 
 	// 허프만 트리 메모리 해제
-	// destroyTree( huffman_tree);
+	destroyTree(huffman_tree);
 
 	fclose(infp);
 	fclose(outfp);
@@ -375,7 +375,6 @@ tNode *make_huffman_tree(int *ch_freq)
 		tNode *mergeNode = newNode(0, 0);
 		mergeNode->left = heapDelete(heap);
 		mergeNode->right = heapDelete(heap);
-		printf("%d, %d\n", mergeNode->left->freq, mergeNode->right->freq);
 		mergeNode->freq = mergeNode->left->freq + mergeNode->right->freq;
 
 		heapInsert(heap, mergeNode);
@@ -384,7 +383,7 @@ tNode *make_huffman_tree(int *ch_freq)
 	heapPrint(heap);
 
 	tNode *huff_tree = heap->heapArr[0];
-	// heapDestroy(heap);
+	heapDestroy(heap);
 
 	return huff_tree;
 }
@@ -396,7 +395,6 @@ void traverse_tree(tNode *root, char *code, int depth, char *codes[])
 	if (root->left == NULL && root->right == NULL)
 	{
 		codes[root->data] = strdup(code);
-		return;
 	}
 	else
 	{
@@ -405,7 +403,7 @@ void traverse_tree(tNode *root, char *code, int depth, char *codes[])
 			newCode = (char *)malloc(sizeof(char) * (depth + 2));
 			sprintf(newCode, "%s%s", code, "0");
 			traverse_tree(root->left, newCode, depth + 1, codes);
-			//free(newCode);
+			free(newCode);
 		}
 
 		if ((root->right) != NULL)
@@ -413,11 +411,9 @@ void traverse_tree(tNode *root, char *code, int depth, char *codes[])
 			newCode = (char *)malloc(sizeof(char) * (depth + 2));
 			sprintf(newCode, "%s%s", code, "1");
 			traverse_tree(root->right, newCode, depth + 1, codes);
-			//free(newCode2);
+			free(newCode);
 		}
 	}
-
-	free(newCode);
 
 	return;
 }
@@ -427,6 +423,7 @@ void make_huffman_code(tNode *root, char *codes[])
 	char *code = (char *)malloc(sizeof(char) * 1);
 	code[0] = '\0';
 	traverse_tree(root, code, 0, codes);
+	free(code);
 	return;
 }
 
@@ -464,4 +461,23 @@ void decoding(tNode *root, FILE *infp, FILE *outfp)
 			curNode = root;
 		}
 	}
+}
+
+void free_huffman_code(char *codes[])
+{
+	for (int i = 0; i < 256; i++)
+	{
+		free(codes[i]);
+	}
+}
+
+void destroyTree(tNode *root)
+{
+	if (root->left != NULL)
+		destroyTree(root->left);
+
+	if (root->right != NULL)
+		destroyTree(root->right);
+
+	free(root);
 }
