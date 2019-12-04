@@ -100,6 +100,7 @@ int main()
 }
 
 int min_editdistance(char *str1, char *str2){
+	// VARIABLE DEFINITION
 	int n = strlen(str1);
 	int m = strlen(str2);
 	int row_size = m+1;
@@ -109,9 +110,10 @@ int min_editdistance(char *str1, char *str2){
 	int dx[3] = {0, -1, -1};
 	int dy[3] = {-1, 0, -1};
 
-	int *op_matrix = (int *)malloc(sizeof(int)*(n+1)*(m+1));
-	int *min_edit = (int *)malloc(sizeof(int)*(n+1)*(m+1));
+	int op_matrix[(n+1)*(m+1)];
+	int min_edit[(n+1)*(m+1)];
 
+	// OP_MATRIX INITIALIZE for clear alignment
 	for(int i=0; i<=n; i++){
 		min_edit[row_size * i] = i;
 		if(i) op_matrix[row_size * i] = DELETE_OP;
@@ -123,41 +125,15 @@ int min_editdistance(char *str1, char *str2){
 
 	for(int j=1; j<=m; j++){
 		for(int i=1; i<=n; i++){
-			/*
-			// MATCH CONDITION
-			if(str1[i-1] == str2[j-1]){
-				min_edit[row_size * i + j] = min_edit[row_size * (i-1) + (j-1)];
-				op_matrix[row_size * i + j] = MATCH_OP;
-			}
-
-			// TRANSPOSE CONDITION
-			else if(i > 1 && j > 1 && str1[i-1] == str2[j-2] && str1[i-2] == str2[j-1]){
-				min_edit[row_size * i + j] = min_edit[row_size * (i-2) + (j-2)] + TRANSPOSE_COST;
-				op_matrix[row_size * i + j] = TRANSPOSE_OP;
-			}
-
-			// INSERT DELETE SUBSTITUTE CONDITION
-			else{
-				min_edit[row_size * i + j] = __GetMin3(min_edit[row_size * (i-1) + j] + DELETE_COST,
-														min_edit[row_size * i + (j-1)] + INSERT_COST,
-														min_edit[row_size * (i-1) + (j-1)] + SUBSTITUTE_COST);
-				
-				for(int k=0; k<3; k++){
-					if(min_edit[row_size * i + j] == min_edit[row_size * (i+dx[k]) + (j+dy[k])] + COST[k])
-						op_matrix[row_size * i + j] += OP[k];
-				}
-			}
-			*/
-
+			// INSERT, DELETE, SUBSTITUTE CONDITION CHECK FIRST
 			min_edit[row_size * i + j] = __GetMin3(min_edit[row_size * (i-1) + j] + DELETE_COST,
 													min_edit[row_size * i + (j-1)] + INSERT_COST,
-													min_edit[row_size * (i-1) + (j-1)] + SUBSTITUTE_COST);
-				
-			for(int k=0; k<3; k++){
+													min_edit[row_size * (i-1) + (j-1)] + SUBSTITUTE_COST);	
+			for(int k=0; k<3; k++)
 				if(min_edit[row_size * i + j] == min_edit[row_size * (i+dx[k]) + (j+dy[k])] + COST[k])
 					op_matrix[row_size * i + j] += OP[k];
-			}
 
+			// MATCH CONDITION CHECK
 			if(str1[i-1] == str2[j-1]){
 				int tmp = min_edit[row_size * (i-1) + (j-1)];
 				if (tmp < min_edit[row_size * i + j]){
@@ -167,6 +143,7 @@ int min_editdistance(char *str1, char *str2){
 				else if(tmp == min_edit[row_size * i + j]) op_matrix[row_size * i + j] += MATCH_OP;
 			}
 
+			// TRANSPOSE CONDITION CHECK
 			if(i > 1 && j > 1 && str1[i-1] == str2[j-2] && str1[i-2] == str2[j-1]){
 				int tmp = min_edit[row_size * (i-2) + (j-2)] + TRANSPOSE_COST;
 				if(tmp < min_edit[row_size * i + j]){
@@ -200,19 +177,25 @@ void print_matrix(int* op_matrix, int row_size, int n, int m){
 }
 
 void backtrace_main(int *op_matrix, int row_size, char *str1, char *str2, int n, int m, int level, char align_str[][8]){
+	// STATIC VARIABLE DEFINITION
 	static int cnt;
+
+	// INITIALIZE when cycle starts
 	if(!level) cnt = 1;
+
 	if(n == 0 && m == 0){
 		printf("\n[%d] ==============================\n", cnt++);
+		// print_alignment function starts printing from level
 		print_alignment(align_str, level-1);
-
 		return;
 	}
 	else{
+		// DFS Call order DEFINITION
 		int arr[5] = {2, 3, 0, 1, 4};
 		for(int i=0; i<5; i++){
 			int k = arr[i];
 			if(op_matrix[row_size * n + m] & (1 << k)){
+				// MATCH & SUBSTITUTE_OP
 				if(k == 2 || k == 3){
 					sprintf(align_str[level], "%c - %c", str1[n-1], str2[m-1]);
 					backtrace_main(op_matrix, row_size, str1, str2, n-1, m-1, level+1, align_str);
@@ -230,25 +213,11 @@ void backtrace_main(int *op_matrix, int row_size, char *str1, char *str2, int n,
 					backtrace_main(op_matrix, row_size, str1, str2, n-1, m, level+1, align_str);
 				}
 				
+				// TRANSPOSE_OP
 				else if(k == 4){
 					sprintf(align_str[level], "%c%c - %c%c", str1[n-2], str1[n-1], str2[m-2], str2[m-1]);
 					backtrace_main(op_matrix, row_size, str1, str2, n-2, m-2, level+1, align_str);
 				}
-				
-
-
-				// SUBSTITUTE_OP and MATCH_OP
-				
-
-				/*
-				// MATCH_OP
-				else if(k == 3){
-					sprintf(align_str, "%c - %c", str1[n-1], str2[m-1])
-				}
-				*/
-
-				// TRANSPOSE_OP
-
 			}
 		}
 	}
