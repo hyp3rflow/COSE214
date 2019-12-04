@@ -106,7 +106,7 @@ void _reheapUp( HEAP *heap, int index)
 		
 		parent = (index - 1) / 2;
 		
-		if (arr[index] > arr[parent]) // exchange (for maxheap)
+		if (arr[index] < arr[parent]) // exchange (for maxheap)
 		{
 			int temp = arr[index];
 			arr[index] = arr[parent];
@@ -147,10 +147,10 @@ void _reheapDown( HEAP *heap, int index)
 		if (index * 2 + 2 <= heap->last) rightData = arr[index * 2 + 2];
 		else noright = 1;
 		
-		if (noright || leftData > rightData) largeindex = index * 2 + 1; // left child
+		if (noright || leftData < rightData) largeindex = index * 2 + 1; // left child
 		else largeindex = index * 2 + 2; // right child
 		
-		if (arr[index] < arr[largeindex]) // exchange (for maxheap)
+		if (arr[index] > arr[largeindex]) // exchange (for maxheap)
 		{
 			int temp = arr[index];
 			arr[index] = arr[largeindex];
