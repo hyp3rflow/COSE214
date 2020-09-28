@@ -10,4 +10,5 @@
 - Minimum edit distance / alignment
 - Huffman code implementation
 
-> 두 개의 Convex hull problem은 하나의 디렉토리에 저장되어 있습니다.
+> 두 개의 Convex hull problem은 하나의 디렉토리에 저장되어 있습니다.  
+> 본 레포지토리의 소스코드를 표절하거나 수정한 뒤 제출해 받는 불이익은 본인이 감수하셔야 합니다.
